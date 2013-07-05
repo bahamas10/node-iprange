@@ -1,6 +1,6 @@
 {
   "name": "iprange",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Generate an array of all ips in a given subnet",
   "author": "Dave Eddy <dave@daveeddy.com> (http://www.daveeddy.com)",
   "main": "./iprange.js",
