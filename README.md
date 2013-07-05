@@ -51,6 +51,36 @@ yields
     192.68.1.14
     192.68.1.15
 
+Usage
+-----
+
+### `iprange(ip)`
+
+returns an array of all ips in the given `ip` subnet
+
+### `new iprange.IPStream(s)`
+
+returns a readable stream where each `data` event is an ip address in the range
+
+``` js
+var IPStream = require('iprange').IPStream;
+var stream = new IPStream('10.0.1.0/29');
+stream.on('data', console.log);
+```
+
+yields
+
+```
+10.0.1.0
+10.0.1.1
+10.0.1.2
+10.0.1.3
+10.0.1.4
+10.0.1.5
+10.0.1.6
+10.0.1.7
+```
+
 Installation
 ------------
 

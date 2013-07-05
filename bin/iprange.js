@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var iprange = require('../');
+var IPStream = require('../').IPStream;
 var ip = process.argv[2];
 
 if (!ip) {
@@ -8,4 +8,5 @@ if (!ip) {
   process.exit(1);
 }
 
-console.log(iprange(ip).join('\n'));
+var stream = new IPStream(ip);
+stream.on('data', console.log);
