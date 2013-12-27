@@ -58,14 +58,17 @@ Usage
 
 returns an array of all ips in the given `ip` subnet
 
-### `new iprange.IPStream(s)`
+### `new iprange.IPEmitter(s)`
 
-returns a readable stream where each `data` event is an ip address in the range
+returns an event emitter where each `ip` event is an ip address in the range
 
 ``` js
-var IPStream = require('iprange').IPStream;
-var stream = new IPStream('10.0.1.0/29');
-stream.on('data', console.log);
+var IPEmitter = require('iprange').IPEmitter;
+var emitter = new IPEmitter('10.0.1.0/29');
+emitter.on('ip', console.log);
+emitter.on('end', function() {
+  console.log('done');
+});
 ```
 
 yields
@@ -79,6 +82,7 @@ yields
 10.0.1.5
 10.0.1.6
 10.0.1.7
+done
 ```
 
 Installation

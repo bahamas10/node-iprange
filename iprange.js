@@ -1,11 +1,11 @@
-var Stream = require('stream');
+var EventEmitter = require('events').EventEmitter;
 var util = require('util');
 
 var ipfunctions = require('ipfunctions');
 var Netmask = require('netmask').Netmask;
 
 module.exports = iprange;
-module.exports.IPStream = IPStream;
+module.exports.IPEmitter = IPEmitter;
 
 // callback style
 function iprange(s) {
@@ -15,7 +15,8 @@ function iprange(s) {
   var block = new Netmask(s);
 
   var firstlong = ipfunctions.ip2long(block.first);
-  if (block.size > 2) firstlong -= 1;
+  if (block.size > 2)
+    firstlong -= 1;
 
   var r = [];
   for (var i = 0; i < block.size; i++) {
@@ -26,17 +27,15 @@ function iprange(s) {
   return r;
 }
 
-// stream style
-util.inherits(IPStream, Stream);
-function IPStream(s) {
-  Stream.call(this);
-  this.readable = true;
-  process.nextTick(go.bind(this));
+// EventEmitter style
+util.inherits(IPEmitter, EventEmitter);
+function IPEmitter(s) {
+  process.nextTick(_ipemitter.bind(this));
 
-  function go() {
+  function _ipemitter() {
     if (s.indexOf('/') < 0) {
       // just a single IP
-      this.emit('data', s);
+      this.emit('ip', s);
       this.emit('end');
       return;
     }
@@ -45,16 +44,17 @@ function IPStream(s) {
     try {
       block = new Netmask(s);
     } catch (e) {
-      return this.emit('error', e);
+      this.emit('error', e);
+      return;
     }
 
     var firstlong = ipfunctions.ip2long(block.first);
-    if (block.size > 2) firstlong -= 1;
+    if (block.size > 2)
+      firstlong -= 1;
 
-    var r = [];
     for (var i = 0; i < block.size; i++) {
       var ip = i + firstlong;
-      this.emit('data', ipfunctions.long2ip(ip));
+      this.emit('ip', ipfunctions.long2ip(ip));
     }
 
     this.emit('end');
